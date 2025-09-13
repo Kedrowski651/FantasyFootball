@@ -30,3 +30,24 @@ streamlit run dashboard.py
 ```
 
 The app will prompt for your league ID and attempt to fetch data from the NFL.com API.
+
+## Fetching league standings
+
+The API module also includes a convenience wrapper for retrieving the current
+league table.
+
+```python
+from league_api import fetch_league_standings
+
+standings = fetch_league_standings("845342")
+for team in standings:
+    print(f"{team['name']}: {team['wins']}-{team['losses']}")
+```
+
+Sample output:
+
+```
+Sharks: 7-1
+Jets: 5-3
+Tigers: 2-6
+```
