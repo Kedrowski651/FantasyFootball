@@ -9,6 +9,16 @@ This project collects utilities and experimentation for building a dashboard aro
 **League example:** I use NFL.com each year.
 League link: https://fantasy.nfl.com/league/845342 (ID: 845342)
 
+## Installation
+
+Install core dependencies with pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+`beautifulsoup4` is optional and only required for HTML scraping features.
+
 ## Playoff Probability Simulator
 
 The `playoff_probability.py` module contains a simple simulator. Provide your league's current standings and remaining schedule, and it will estimate the chance that each team makes the playoffs.
