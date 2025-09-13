@@ -6,7 +6,7 @@ import pytest
 # Add project root to module search path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from league_api import fetch_league_data, fetch_league_standings
+from league_api import fetch_league_data, fetch_league_standings, parse_standings
 
 
 class DummyResponse:
@@ -47,7 +47,8 @@ def test_fetch_league_data_errors_on_non_json():
         fetch_league_data("123", session=session)
 
 
-def test_fetch_league_standings_parses_html():
+def test_fetch_league_standings_parses_html_with_bs4():
+    # If bs4 isn't installed, skip—fetch_league_standings will still be covered by regex test below
     pytest.importorskip("bs4")
     html = """
     <table class="tableType-team hasGroups">
@@ -88,3 +89,17 @@ def test_fetch_league_standings_parses_html():
         },
     ]
     assert "999" in session.last_url
+
+
+def test_parse_standings_regex_fallback():
+    # Covers the regex-based parser (and by extension, fetch_league_standings fallback logic)
+    html = """
+    <table id="standings">
+        <tr><th>Team</th><th>Record</th></tr>
+        <tr><td class="teamName">Alpha</td><td class="record">5-2-0</td></tr>
+        <tr><td class="teamName">Bravo</td><td class="record">4-3-0</td></tr>
+    </table>
+    """
+    standings = parse_standings(html)
+    assert ("Alpha", 5, 2, 0) in standings
+    assert ("Bravo", 4, 3, 0) in standings
