@@ -1,4 +1,21 @@
-I use nfl.com to play fantasy football every year and looking to make some type of dashboard that will display various items such as probability to clinch playoffs or path to elimination and other various items the league may enjoy to look at
+# Fantasy Football Dashboard
 
-This is the link to my fantasy football league and my League ID is 845342
-https://fantasy.nfl.com/league/845342
+This project collects utilities and experimentation for building a dashboard
+around NFL.com fantasy leagues. Core features include:
+- Playoff clinching probabilities (Monte Carlo simulation)
+- Paths to elimination / playoff scenarios
+- League dashboards with metrics your league will enjoy
+
+**League example:** I use NFL.com each year.  
+League link: https://fantasy.nfl.com/league/845342 (ID: 845342)
+
+## Playoff Probability Simulator
+
+The `playoff_probability.py` module contains a simple simulator. Provide your
+league's current standings and remaining schedule, and it will estimate the
+chance that each team makes the playoffs.
+
+### Example
+
+```bash
+python playoff_probability.py
