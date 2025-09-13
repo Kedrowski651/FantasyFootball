@@ -1,7 +1,8 @@
 """Utilities for interacting with NFL.com fantasy league API."""
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+import re
+from typing import Any, Dict, List, Optional, Tuple
 
 try:  # pragma: no cover - optional dependency
     import requests
@@ -50,3 +51,33 @@ def fetch_league_data(league_id: str, session: Optional[object] = None) -> Dict[
         return response.json()
     except ValueError as exc:
         raise ValueError("NFL.com returned malformed JSON data") from exc
+
+
+STANDING_ROW_RE = re.compile(
+    r"<td[^>]*class=\"teamName\"[^>]*>(?P<team>[^<]+)</td>\s*<td[^>]*class=\"record\"[^>]*>(?P<wins>\d+)-(?P<losses>\d+)-(?P<ties>\d+)</td>",
+    re.IGNORECASE,
+)
+
+
+def parse_standings(html: str) -> List[Tuple[str, int, int, int]]:
+    """Extract team standings from an NFL.com league page.
+
+    Parameters
+    ----------
+    html: str
+        HTML content of the league standings page.
+
+    Returns
+    -------
+    list of tuples
+        Each tuple contains ``(team, wins, losses, ties)``.
+    """
+
+    standings: List[Tuple[str, int, int, int]] = []
+    for match in STANDING_ROW_RE.finditer(html):
+        team = match.group("team").strip()
+        wins = int(match.group("wins"))
+        losses = int(match.group("losses"))
+        ties = int(match.group("ties"))
+        standings.append((team, wins, losses, ties))
+    return standings

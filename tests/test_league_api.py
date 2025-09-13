@@ -6,7 +6,7 @@ import pytest
 # Add project root to module search path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from league_api import fetch_league_data
+from league_api import fetch_league_data, parse_standings
 
 
 class DummyResponse:
@@ -43,3 +43,15 @@ def test_fetch_league_data_errors_on_non_json():
     session = DummySession({}, headers={"Content-Type": "text/html"})
     with pytest.raises(ValueError):
         fetch_league_data("123", session=session)
+
+
+def test_parse_standings_returns_expected_team():
+    html = """
+    <table id="standings">
+        <tr><th>Team</th><th>Record</th></tr>
+        <tr><td class="teamName">Alpha</td><td class="record">5-2-0</td></tr>
+        <tr><td class="teamName">Bravo</td><td class="record">4-3-0</td></tr>
+    </table>
+    """
+    standings = parse_standings(html)
+    assert ("Alpha", 5, 2, 0) in standings
