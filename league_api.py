@@ -33,4 +33,20 @@ def fetch_league_data(league_id: str, session: Optional[object] = None) -> Dict[
     url = API_URL_TEMPLATE.format(league_id=league_id)
     response = sess.get(url)
     response.raise_for_status()
-    return response.json()
+
+    # The NFL.com endpoint sometimes returns an HTML document (for example when
+    # the league is private or the ID is invalid).  Attempting to decode such a
+    # response as JSON results in a cryptic ``JSONDecodeError`` message like
+    # ``Expecting value: line 1 column 1``.  To provide a clearer error we
+    # validate that the response claims to contain JSON before decoding and, if
+    # decoding still fails, raise a ``ValueError`` with a helpful message.
+    content_type = response.headers.get("Content-Type", "")
+    if "json" not in content_type.lower():
+        raise ValueError(
+            "NFL.com did not return JSON data; the league may be private or the ID may be invalid."
+        )
+
+    try:
+        return response.json()
+    except ValueError as exc:
+        raise ValueError("NFL.com returned malformed JSON data") from exc
