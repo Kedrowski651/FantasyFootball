@@ -1,8 +1,13 @@
 # Fantasy Football Dashboard
 
 This project collects utilities and experimentation for building a dashboard
-around NFL.com fantasy leagues. One of the core features is estimating playoff
-clinching probabilities using a Monte Carlo simulation.
+around NFL.com fantasy leagues. Core features include:
+- Playoff clinching probabilities (Monte Carlo simulation)
+- Paths to elimination / playoff scenarios
+- League dashboards with metrics your league will enjoy
+
+**League example:** I use NFL.com each year.  
+League link: https://fantasy.nfl.com/league/845342 (ID: 845342)
 
 ## Playoff Probability Simulator
 
@@ -14,16 +19,3 @@ chance that each team makes the playoffs.
 
 ```bash
 python playoff_probability.py
-```
-
-The default example in the file runs a tiny simulation and prints the odds for
-four sample teams. Adapt the `example_teams` and `example_schedule` variables to
-use your league's real data.
-
-### Running Tests
-
-```bash
-pytest
-```
-
-The tests include a small smoke test for the simulation logic.
